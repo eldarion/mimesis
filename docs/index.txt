@@ -1,0 +1,12 @@
+.. mimesis documentation master file
+
+mimesis documentation
+=====================
+
+mimesis is an extensible user profile app built by Eldarion.
+
+.. toctree::
+   :maxdepth: 3
+
+   gettingstarted
+   reference

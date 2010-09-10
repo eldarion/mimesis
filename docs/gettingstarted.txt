@@ -1,0 +1,76 @@
+.. _ref-gettingstarted:
+
+===============
+Getting started
+===============
+
+This document is designed to get you up and running with mimesis. This app is
+designed for use with Django_, however, can be used with Pinax_. Pinax can
+provide some extra components which will enhance the functionality of mimesis.
+Those extra components are designed for Django too and Pinax simply brings
+them together.
+
+
+Prerequisites
+=============
+
+These are the requirements to run mimesis:
+
+ * Python **2.5+** (Python 3.x is **not** supported yet)
+ * Django **1.2+**
+ * djagno-taggit **0.8.0**
+
+Some packages that will be immensely useful, but not required, are:
+
+ * sorl-thumbnail **3.2.5**
+
+
+Installation
+============
+
+To install mimesis use pip_:
+
+.. code-block:: none
+
+    pip install mimesis
+
+Add mimesis to your ``INSTALLED_APPS``:
+
+.. code-block:: python
+
+    INSTALLED_APPS = [
+        # ...
+        "mimesis",
+    ]
+
+Hook up mimesis to your URLconf:
+
+.. code-block:: python
+
+    urlpatterns = patterns("",
+        # ...
+        url(r"^photos/", include("mimesis.urls"))
+    )
+
+This is largely all you need to do to get mimesis setup in your project.
+Continue reading on to learn more about how to use mimesis.
+
+
+Usage
+=====
+
+If you want to use a flash uploader, like ``swfupload`` with jQuery's uploadify_
+you'll need to set ``MIMESIS_USE_FLASH_UPLOAD`` to ``True`` so that the the
+upload handler will do the right thing with regards to session data since the
+user's authenticated session cookie will not be sent on the Flash POST.
+
+.. code-block:: python
+
+    MIMESIS_USE_FLASH_UPLOAD = True
+
+
+.. _Django: http://www.djangoproject.com/
+.. _Pinax: http://pinaxproject.com/
+.. _pip: http://pip.openplans.org/
+.. _uploadify: http://www.uploadify.com/
+

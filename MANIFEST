@@ -1,0 +1,13 @@
+LICENSE
+README.rst
+setup.cfg
+setup.py
+mimesis/__init__.py
+mimesis/admin.py
+mimesis/decorators.py
+mimesis/forms.py
+mimesis/models.py
+mimesis/urls.py
+mimesis/views.py
+mimesis/tests/__init__.py
+mimesis/tests/test_form.py

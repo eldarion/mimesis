@@ -1,0 +1,93 @@
+.. _ref-reference:
+
+=========
+Reference
+=========
+
+This document covers various components of mimesis.
+
+
+Settings
+========
+
+``MIMESIS_USE_FLASH_UPLOAD``
+----------------------------
+
+This value controls whether or not you intend to use Flash upload components in
+your template versus standard HTML file fields.  It defaults to ``False``,
+however, by setting it to ``True``, the upload handler will have an exception
+made for CSRF protection as well as enable the proper recovery of a user's
+identity due to the fact that cookies can't be read on requests coming from
+Flash initiated requests.
+
+.. code-block:: python
+
+    MIMESIS_USE_FLASH_UPLOAD = True
+
+Then, you will need to pass a variable back in the payload that the Flash
+component sends to the the server via POST when it uploads the files.  For
+example, when using the jQuery uploadify_ plugin, you'll want do something like
+the following:
+
+.. code-block:: javascript
+
+    $(document).ready(function() {
+        $('#fileInput').uploadify({
+            'uploader'  : '{{ STATIC_URL }}js/uploadify/uploadify.swf',
+            'script'    : '{% url mimesis_upload_start_url %}',
+            'scriptData': {'session_key': '{{ request.session.session_key }}'},
+            'cancelImg' : '{{ STATIC_URL }}js/uploadify/cancel.png',
+            'auto'      : true,
+            'folder'    : '{{ STATIC_URL }}uploads/',
+            'multi'     : true,
+            'onAllComplete' : allComplete
+        });
+    });
+
+
+
+Modules
+=======
+
+
+``mimesis.admin``
+-----------------
+
+
+``mimesis.decorators``
+----------------------
+
+
+``mimesis.forms``
+-----------------
+
+.. module:: mimesis.forms
+
+
+``mimesis.models``
+------------------
+
+.. module:: mimesis.models
+
+
+
+``mimesis.urls``
+-----------------
+-
+
+``mimesis.views``
+-----------------
+
+.. module:: mimesis.views
+
+.. autofunction:: index
+.. autofunction:: recent
+.. autofunction:: albums
+.. autofunction:: album
+.. autofunction:: photo
+.. autofunction:: upload_start
+.. autofunction:: upload_complete
+
+
+
+.. _uploadify: http://www.uploadify.com/
