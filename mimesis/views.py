@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
@@ -23,8 +24,10 @@ def index(request, template_name="mimesis/index.html", extra_context=None):
             uploaded_by=request.user
         ).order_by("-uploaded_on")
         
+        ctype = ContentType.objects.get_for_model(request.user)
         user_albums = Album.objects.filter(
-            owner=request.user
+            owner_content_type__pk=ctype.id, 
+            owner_id=request.user.id
         ).order_by("-date_created")
     
     public_photos = Photo.objects.filter(
@@ -87,7 +90,11 @@ def albums(request, form_class=AlbumForm, template_name="mimesis/albums.html", e
             album.save()
             return HttpResponseRedirect(reverse("mimesis_albums"))
     
-    albums = Album.objects.filter(owner=request.user).order_by("-date_created")
+    ctype = ContentType.objects.get_for_model(request.user)
+    albums = Album.objects.filter(
+        owner_content_type__pk=ctype.id, 
+        owner_id=request.user.id
+    ).order_by("-date_created")
     
     return render_to_response(template_name, dict({
         "albums": albums,
@@ -101,7 +108,8 @@ def album(request, album_id, template_name="mimesis/album.html", extra_context=N
     if extra_context is None:
         extra_context = {}
     
-    album = Album.objects.get(id=album_id, owner=request.user)
+    ctype = ContentType.objects.get_for_model(request.user)
+    album = Album.objects.get(id=album_id, owner_id=request.user.id)
     photos = album.photo_set.all().order_by("-uploaded_on")
     
     return render_to_response(template_name, dict({
@@ -134,7 +142,8 @@ def upload_start(request, album_id=None):
         a = None
         if album_id:
             try:
-                a = Album.objects.get(owner=request.user, id=album_id)
+                ctype = ContentType.objects.get_for_model(request.user)
+                a = Album.objects.get(owner_id=request.user.id, owner_content_type=ctype, id=album_id)
             except Album.DoesNotExist:
                 pass
         

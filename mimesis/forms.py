@@ -7,4 +7,4 @@ class AlbumForm(forms.ModelForm):
     
     class Meta:
         model = Album
-        exclude = ["owner", "date_created"]
+        exclude = ["owner_id", "owner", "owner_content_type" ,"date_created"]
