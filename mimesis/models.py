@@ -2,13 +2,18 @@ from datetime import datetime
 
 from django.contrib.auth.models import User
 from django.db import models
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes import generic
 
 from taggit.managers import TaggableManager
 
 
 class Album(models.Model):
     
-    owner = models.ForeignKey(User)
+    owner_content_type = models.ForeignKey(ContentType)
+    owner_id = models.PositiveIntegerField()
+    owner = generic.GenericForeignKey("owner_content_type", "owner_id")
+    
     name = models.CharField(max_length=150)
     description = models.TextField(null=True, blank=True)
     private = models.BooleanField(default=False)
@@ -27,7 +32,7 @@ class Album(models.Model):
 
 class Photo(models.Model):
     
-    album = models.ForeignKey(Album, null=True, blank=True)
+    album = models.ForeignKey(Album)
     photo = models.ImageField(
         upload_to="mimesis/%Y/%m/%d",
         height_field="height",
@@ -49,20 +54,12 @@ class Photo(models.Model):
         if desc:
             order = "-id"
         
-        if self.album:
-            p = self.album.photo_set.filter(**kwargs).order_by(order)
-            if p:
-                return p[0]
-            p = self.album.photo_set.all().order_by(order)
-            if p:
-                return p[0]
-        else:
-            p = self.uploaded_by.photo_set.filter(**kwargs).order_by(order)
-            if p:
-                return p[0]
-            p = self.uploaded_by.photo_set.all().order_by(order)
-            if p:
-                return p[0]
+        p = self.album.photo_set.filter(**kwargs).order_by(order)
+        if p:
+            return p[0]
+        p = self.album.photo_set.all().order_by(order)
+        if p:
+            return p[0]
     
     def prev(self):
         return self.next_or_prev(desc=True, id__lt=self.id)
