@@ -4,7 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.forms.models import modelformset_factory
-from django.http import HttpResponseRedirect, HttpResponse, HttpResponseForbidden
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseForbidden, Http404
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 
@@ -17,17 +17,19 @@ def index(request, template_name="mimesis/index.html", extra_context=None):
     if extra_context is None:
         extra_context = {}
     
-    user_photos, user_albums = None, None
+    persona_photos, persona_albums = None, None
     
     if request.user.is_authenticated():
-        user_photos = Photo.objects.filter(
-            uploaded_by=request.user
-        ).order_by("-uploaded_on")
+        persona = request.session.get("persona")
+        if not persona:
+            persona = request.user.get_profile()
         
-        ctype = ContentType.objects.get_for_model(request.user)
-        user_albums = Album.objects.filter(
+        persona_photos = Photo.objects.with_owner(persona).order_by("-uploaded_on")
+        
+        ctype = ContentType.objects.get_for_model(persona)
+        persona_albums = Album.objects.filter(
             owner_content_type__pk=ctype.id, 
-            owner_id=request.user.id
+            owner_id=persona.id
         ).order_by("-date_created")
     
     public_photos = Photo.objects.filter(
@@ -35,8 +37,8 @@ def index(request, template_name="mimesis/index.html", extra_context=None):
     ).order_by("-uploaded_on")
     
     return render_to_response(template_name, dict({
-        "user_photos": user_photos,
-        "user_albums": user_albums,
+        "persona_photos": persona_photos,
+        "persona_albums": persona_albums,
         "public_photos": public_photos
     }, **extra_context), context_instance=RequestContext(request))
 
@@ -61,8 +63,12 @@ def recent(request, template_name="mimesis/recent.html", extra_context=None):
                 photo.new_upload = False
                 photo.save()
     
-    photos = Photo.objects.filter(
-        uploaded_by=request.user,
+    persona = request.session.get("persona")
+    if not persona:
+        persona = request.user.get_profile()
+    
+    ctype = ContentType.objects.get_for_model(persona)
+    photos = Photo.objects.with_owner(persona).filter(
         new_upload=True
     ).order_by("-uploaded_on")
     
@@ -82,18 +88,22 @@ def albums(request, form_class=AlbumForm, template_name="mimesis/albums.html", e
     if extra_context is None:
         extra_context = {}
     
+    persona = request.session.get("persona")
+    if not persona:
+        persona = request.user.get_profile()
+    
     if request.method == "POST":
         form = form_class(request.POST)
         if form.is_valid():
             album = form.save(commit=False)
-            album.owner = request.user
+            album.owner = persona
             album.save()
             return HttpResponseRedirect(reverse("mimesis_albums"))
     
-    ctype = ContentType.objects.get_for_model(request.user)
+    ctype = ContentType.objects.get_for_model(persona)
     albums = Album.objects.filter(
         owner_content_type__pk=ctype.id, 
-        owner_id=request.user.id
+        owner_id=persona.id
     ).order_by("-date_created")
     
     return render_to_response(template_name, dict({
@@ -108,8 +118,16 @@ def album(request, album_id, template_name="mimesis/album.html", extra_context=N
     if extra_context is None:
         extra_context = {}
     
-    ctype = ContentType.objects.get_for_model(request.user)
-    album = Album.objects.get(id=album_id, owner_id=request.user.id)
+    persona = request.session.get("persona")
+    if not persona:
+        persona = request.user.get_profile()
+    
+    ctype = ContentType.objects.get_for_model(persona)
+    album = Album.objects.get(
+        id=album_id,
+        owner_content_type__pk=ctype.id,
+        owner_id=persona.id
+    )
     photos = album.photo_set.all().order_by("-uploaded_on")
     
     return render_to_response(template_name, dict({
@@ -124,10 +142,17 @@ def photo(request, photo_id, template_name="mimesis/photo.html", extra_context=N
     if extra_context is None:
         extra_context = {}
     
-    photos = Photo.objects.get(id=photo_id, uploaded_by=request.user)
+    persona = request.session.get("persona")
+    if not persona:
+        persona = request.user.get_profile()
+
+    ctype = ContentType.objects.get_for_model(persona)
+    photo = Photo.objects.get(id=photo_id)
+    if photo.private and photo.album.owner.user != persona.user:
+        raise Http404
     
     return render_to_response(template_name, dict({
-        "photo": photos,
+        "photo": photo,
     }, **extra_context), context_instance=RequestContext(request))
 
 
@@ -138,16 +163,20 @@ def upload_start(request, album_id=None):
     if request.user.is_anonymous():
         return HttpResponseForbidden("You must be logged in to upload photos.")
     
+    persona = request.session.get("persona")
+    if not persona:
+        persona = request.user.get_profile()
+    
     if request.method == "POST" and request.FILES:
         a = None
         if album_id:
             try:
-                ctype = ContentType.objects.get_for_model(request.user)
-                a = Album.objects.get(owner_id=request.user.id, owner_content_type=ctype, id=album_id)
+                ctype = ContentType.objects.get_for_model(persona)
+                a = Album.objects.get(owner_id=persona.id, owner_content_type=ctype, id=album_id)
             except Album.DoesNotExist:
                 pass
         
-        for f in request.FILES.keys():            
+        for f in request.FILES.keys():
             p = Photo(
                 photo=request.FILES[f],
                 uploaded_by=request.user,

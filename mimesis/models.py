@@ -30,6 +30,15 @@ class Album(models.Model):
         return photo
 
 
+class PhotoManager(models.Manager):
+    def with_owner(self, obj):
+        ctype = ContentType.objects.get_for_model(obj)
+        return super(PhotoManager, self).get_query_set().filter(
+            album__owner_id=obj.id,
+            album__owner_content_type__pk=ctype.id
+        )
+
+
 class Photo(models.Model):
     
     album = models.ForeignKey(Album)
@@ -48,6 +57,8 @@ class Photo(models.Model):
     uploaded_on = models.DateTimeField(default=datetime.now)
     
     tags = TaggableManager()
+    
+    objects = PhotoManager()
     
     def next_or_prev(self, desc, **kwargs):
         order = "id"
