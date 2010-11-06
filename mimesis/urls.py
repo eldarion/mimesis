@@ -1,15 +1,6 @@
-from django.conf import settings
 from django.conf.urls.defaults import patterns, url
-from django.views.decorators.csrf import csrf_exempt
 
-from mimesis.decorators import flashify
 from mimesis.views import index, album, upload_start
-
-
-if getattr(settings, "MIMESIS_USE_FLASH_UPLOAD", False):
-    index = csrf_exempt(flashify(index))
-    album = csrf_exempt(flashify(album))
-    upload_start = csrf_exempt(flashify(upload_start))
 
 
 urlpatterns = patterns("mimesis.views",
