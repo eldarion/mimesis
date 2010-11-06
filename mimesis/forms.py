@@ -1,10 +1,10 @@
 from django import forms
 
-from mimesis.models import Album
+from mimesis.models import UserAlbum
 
 
-class AlbumForm(forms.ModelForm):
+class UserAlbumForm(forms.ModelForm):
     
     class Meta:
-        model = Album
-        exclude = ["owner_id", "owner", "owner_content_type" ,"date_created"]
+        model = UserAlbum
+        exclude = ["user" ,"date_created"]
