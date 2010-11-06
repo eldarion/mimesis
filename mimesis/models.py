@@ -6,6 +6,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.utils.translation import ugettext_lazy as _
 
+from imagekit.models import ImageModel
+
 from taggit.managers import TaggableManager
 
 
@@ -36,22 +38,9 @@ class Album(models.Model):
     def __unicode__(self):
         return u"%s" % self.name
 
-class ImageModel(models.Model):
-    
-    photo = models.ImageField(
-        upload_to="mimesis/%Y/%m/%d",
-        height_field="height",
-        width_field="width"
-    )
-    width = models.IntegerField(blank=True)
-    height = models.IntegerField(blank=True)
-    
-    class Meta:
-        abstract = True
-
 
 class PhotoManager(models.Manager):
-    def with_owner(self, obj):
+    def with_owner(self, obj):        
         ctype = ContentType.objects.get_for_model(obj)
         return super(PhotoManager, self).get_query_set().filter(
             album__owner_id=obj.id,
@@ -61,18 +50,21 @@ class PhotoManager(models.Manager):
 
 class Photo(ImageModel):
     title = models.CharField(max_length=150, null=True, blank=True)
-    description = models.TextField(null=True, blank=True)
-    album = models.ForeignKey(Album, related_name="album")
+    original_image = models.ImageField(upload_to="mimesis/%Y/%m/%d")
+    num_views = models.PositiveIntegerField(editable=False, default=0)
     
+    album = models.ForeignKey(Album, related_name="album")
     private = models.BooleanField(default=False)
     new_upload = models.BooleanField(default=True)
-    
     uploaded_by = models.ForeignKey(User)
     uploaded_on = models.DateTimeField(default=datetime.now)
     
     tags = TaggableManager()
-    
     objects = PhotoManager()
+    
+    class IKOptions:
+        image_field = "original_image"
+        save_count_as = "num_views"
     
     def next_or_prev(self, desc, **kwargs):
         order = "id"
