@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.contenttypes.models import ContentType
 
 
-class ImageManager(models.Manager):
+class MediaManager(models.Manager):
     def for_model(self, model, content_type=None):
         content_type = content_type or ContentType.objects.get_for_model(model)
         kwargs = {
