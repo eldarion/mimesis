@@ -50,7 +50,7 @@ class TestAlbumForm(TestCase):
         self.assertEquals(instance.description, data["description"])
         self.assertEquals(instance.private, data["private"])
         self.assertEquals(instance.owner, self.user)
-
+    
     def test_new_album_invalid_form(self):
         form = AlbumForm()
         

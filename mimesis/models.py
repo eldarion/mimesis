@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -18,7 +18,7 @@ class MediaBase(models.Model):
     
     title = models.CharField(max_length=150, null=True, blank=True)
     user = models.ForeignKey(User)
-    date_created = models.DateTimeField(default=datetime.now)
+    created = models.DateTimeField(default=datetime.datetime.now)
     private = models.BooleanField(default=False)
     
     owner_content_type = models.ForeignKey(ContentType)
@@ -33,7 +33,8 @@ class MediaBase(models.Model):
 
 
 class Image(MediaBase):
-    image = models.ImageField(upload_to="mimesis/%Y/%m/%d")
+    
+    image = models.ImageField(upload_to="mimesis/image/%Y/%m/%d")
     
     def __unicode__(self):
         return u"Image for %s" % self.owner
@@ -42,7 +43,6 @@ class Image(MediaBase):
         order = "id"
         if desc:
             order = "-id"
-        
         p = self.owner.image_set.filter(**kwargs).order_by(order)
         if p:
             return p[0]
@@ -57,13 +57,9 @@ class Image(MediaBase):
         return self.next_or_prev(desc=False, id__gt=self.id)
 
 
-# class Audio(MediaBase):
-#     
-#     def __unicode__(self):
-#         return u"Audio"
-# 
-# 
-# class Video(models.Model):
-#     
-#     def __unicode__(self):
-#         return u"Video"
+class Audio(MediaBase):
+    
+    audio = models.FileField(upload_to="mimesis/audio/%Y/%m/%d")
+    
+    def __unicode__(self):
+        return u"Audio"

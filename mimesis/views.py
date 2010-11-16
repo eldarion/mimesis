@@ -145,7 +145,7 @@ def photo(request, photo_id, template_name="mimesis/photo.html", extra_context=N
     persona = request.session.get("persona")
     if not persona:
         persona = request.user.get_profile()
-
+    
     ctype = ContentType.objects.get_for_model(persona)
     photo = Photo.objects.get(id=photo_id)
     if photo.private and photo.album.owner.user != persona.user:
@@ -193,5 +193,3 @@ def upload_start(request, album_id=None):
 def upload_complete(request):
     url = reverse("mimesis_recent")
     return HttpResponse("<a href=\"%s\">See Uploaded Photos</a>" % url)
-
-
