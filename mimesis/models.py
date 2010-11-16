@@ -22,8 +22,8 @@ class MediaBase(models.Model):
     private = models.BooleanField(default=False)
     
     owner_content_type = models.ForeignKey(ContentType)
-    owner_id = models.PositiveIntegerField()
-    owner = generic.GenericForeignKey("owner_content_type", "owner_id")
+    owner_object_id = models.PositiveIntegerField()
+    owner = generic.GenericForeignKey("owner_content_type", "owner_object_id")
     
     tags = TaggableManager()
     objects = MediaManager()
@@ -62,4 +62,4 @@ class Audio(MediaBase):
     audio = models.FileField(upload_to="mimesis/audio/%Y/%m/%d")
     
     def __unicode__(self):
-        return u"Audio"
+        return u"Audio for %s" % self.owner
