@@ -137,10 +137,12 @@ INSTALLED_APPS = [
     # external
     "staticfiles",
     "debug_toolbar",
+    "taggit",
     
     # Pinax
     
     # project
+    "mimesis",
 ]
 
 FIXTURE_DIRS = [
