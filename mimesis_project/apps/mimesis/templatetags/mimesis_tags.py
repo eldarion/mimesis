@@ -2,7 +2,7 @@ from django import template
 from django.contrib.contenttypes.models import ContentType
 from django.utils.encoding import smart_unicode
 
-from mimesis.models import ImageAssociation
+from mimesis.models import ImageAssociation, AudioAssociation, VideoAssociation
 
 register = template.Library()
 
@@ -115,3 +115,23 @@ def get_image_count(parser, token):
 @register.tag
 def get_image_list(parser, token):
     return MediaListNode.handle_token(parser, token, ImageAssociation)
+
+
+@register.tag
+def get_audio_count(parser, token):
+    return MediaCountNode.handle_token(parser, token, AudioAssociation)
+
+
+@register.tag
+def get_audio_list(parser, token):
+    return MediaListNode.handle_token(parser, token, AudioAssociation)
+
+
+@register.tag
+def get_video_count(parser, token):
+    return MediaCountNode.handle_token(parser, token, VideoAssociation)
+
+
+@register.tag
+def get_video_list(parser, token):
+    return MediaListNode.handle_token(parser, token, VideoAssociation)
