@@ -22,9 +22,9 @@ class MediaBase(models.Model):
 
 class MediaAssociationBase(models.Model):
     
-    owner_content_type = models.ForeignKey(ContentType)
-    owner_object_id = models.PositiveIntegerField()
-    owner = generic.GenericForeignKey("owner_content_type", "owner_object_id")
+    content_type = models.ForeignKey(ContentType)
+    object_pk = models.PositiveIntegerField()
+    content_object = generic.GenericForeignKey("content_type", "object_pk")
     
     caption = models.TextField(blank=True)
     

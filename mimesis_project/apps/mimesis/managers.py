@@ -10,8 +10,8 @@ class MediaAssociationManager(models.Manager):
         a class).
         """
         ct = content_type or ContentType.objects.get_for_model(model)
-        qs = self.get_query_set().filter(owner_content_type=ct)
+        qs = self.get_query_set().filter(content_type=ct)
         if isinstance(model, models.Model):
-            qs = qs.filter(owner_object_id=force_unicode(model._get_pk_val()))
+            qs = qs.filter(object_pk=force_unicode(model._get_pk_val()))
         return qs
 
