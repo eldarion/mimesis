@@ -5,3 +5,6 @@
 
 # Put project-specific requirements here.
 # See http://pip-installer.org/requirement-format.html for more information.
+
+pil==1.1.7
+django-taggit==0.9.1
