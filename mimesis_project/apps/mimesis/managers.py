@@ -3,7 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.utils.encoding import force_unicode
 
 class MediaAssociationManager(models.Manager):
-
+    
     def for_model(self, model, content_type=None):
         """
         QuerySet for all media for a particular model (either an instance or
