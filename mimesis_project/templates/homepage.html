@@ -1,6 +1,7 @@
 {% extends "site_base.html" %}
 
 {% load i18n %}
+{% load mimesis_tags %}
 
 {% block head_title %}{% trans "Welcome" %}{% endblock %}
 
@@ -9,6 +10,16 @@
 {% block body %}
     
     <h1>{% trans "Welcome to Pinax" %}</h1>
+    
+    {% if request.user.is_authenticated %}
+    {% get_image_count for request.user as image_count %}
+    {% get_image_list for request.user as images %}
+    <h4># of Images: {{ image_count }}</h4>
+        
+        {% for image in images %}
+            <img src="{{ MEDIA_URL }}{{ image.image.image }}" />
+        {% endfor %}
+    {% endif %}
     
     <p>
         {% blocktrans %}
