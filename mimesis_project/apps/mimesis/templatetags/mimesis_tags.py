@@ -9,12 +9,12 @@ register = template.Library()
 
 class BaseMediaNode(template.Node):
     """
-    Base helper class (abstract) for handling the get_media_* template tags.
+    Base helper class (abstract) for handling the get_media_for template tags.
     """
 
     @classmethod
     def handle_token(cls, parser, token, model):
-        """Class method to parse get_*_list/count and return a Node."""
+        """Class method to parse get_media_list and return a Node."""
         
         tokens = token.contents.split()
         if tokens[1] != 'for':
@@ -101,37 +101,16 @@ class MediaListNode(BaseMediaNode):
         return list(qs)
 
 
-class MediaCountNode(BaseMediaNode):
-    """Insert a count of media into the context."""
-    def get_context_value_from_queryset(self, context, qs):
-        return qs.count()
-
-
 @register.tag
-def get_image_count(parser, token):
-    return MediaCountNode.handle_token(parser, token, ImageAssociation)
-
-
-@register.tag
-def get_image_list(parser, token):
+def get_images_for(parser, token):
     return MediaListNode.handle_token(parser, token, ImageAssociation)
 
 
 @register.tag
-def get_audio_count(parser, token):
-    return MediaCountNode.handle_token(parser, token, AudioAssociation)
-
-
-@register.tag
-def get_audio_list(parser, token):
+def get_audio_for(parser, token):
     return MediaListNode.handle_token(parser, token, AudioAssociation)
 
 
 @register.tag
-def get_video_count(parser, token):
-    return MediaCountNode.handle_token(parser, token, VideoAssociation)
-
-
-@register.tag
-def get_video_list(parser, token):
+def get_videos_for(parser, token):
     return MediaListNode.handle_token(parser, token, VideoAssociation)
