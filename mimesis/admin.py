@@ -1,7 +1,6 @@
 from django.contrib import admin
 
-from mimesis.models import Album, Photo
+from mimesis.models import Image, ImageAssociation
 
-
-admin.site.register(Album)
-admin.site.register(Photo)
+admin.site.register(Image)
+admin.site.register(ImageAssociation)
