@@ -9,12 +9,13 @@ setup(
     version = VERSION,
     author = "Eldarion",
     author_email = "development@eldarion.com",
-    description = "a simple photo management app",
+    description = "a simple media management app",
     long_description = open("README.rst").read(),
     license = "BSD",
     url = "http://github.com/eldarion/mimesis",
     packages = [
         "mimesis",
+        "mimesis.templatetags",
         "mimesis.tests",
     ],
     classifiers = [
