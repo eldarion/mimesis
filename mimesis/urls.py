@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import patterns, url
 
 
-urlpatterns = patterns("upload.views",
+urlpatterns = patterns("mimesis.views",
     
     # Images
     url(r"^/image/add/", "add_image", name="add_image"),

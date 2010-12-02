@@ -18,7 +18,7 @@ class ImageForm(forms.ModelForm):
 
 class ImageAssociationForm(forms.ModelForm):
     
-    caption = forms.TextField(blank=True)
+    caption = forms.CharField()
     
     class Meta:
         model = ImageAssociation
@@ -44,7 +44,7 @@ class AudioForm(forms.ModelForm):
 
 class AudioAssociationForm(forms.ModelForm):
     
-    caption = forms.TextField()
+    caption = forms.CharField()
     
     class Meta:
         model = AudioAssociation
