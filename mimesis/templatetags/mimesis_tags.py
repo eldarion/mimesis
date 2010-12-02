@@ -103,7 +103,7 @@ class MediaListNode(BaseMediaNode):
 
 
 @register.tag
-def get_images_list(parser, token):
+def get_image_list(parser, token):
     return MediaListNode.handle_token(parser, token, ImageAssociation)
 
 
@@ -113,7 +113,7 @@ def get_audio_list(parser, token):
 
 
 @register.tag
-def get_videos_list(parser, token):
+def get_video_list(parser, token):
     return MediaListNode.handle_token(parser, token, VideoAssociation)
 
 
