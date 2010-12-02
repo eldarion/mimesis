@@ -3,6 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.utils.encoding import smart_unicode
 
 from mimesis.models import ImageAssociation, AudioAssociation, VideoAssociation
+from mimesis.forms import ImageForm, AudioForm
 
 register = template.Library()
 
@@ -114,3 +115,20 @@ def get_audio_list(parser, token):
 @register.tag
 def get_videos_list(parser, token):
     return MediaListNode.handle_token(parser, token, VideoAssociation)
+
+
+@register.inclusion_tag("mimesis/add_form.html", takes_context=True)
+def image_form(context, obj=None):
+    return {
+        "form": ImageForm(),
+        "next": context["request"].build_absolute_uri(),
+    }
+
+
+@register.inclusion_tag("mimesis/add_form.html", takes_context=True)
+def audio_form(context, obj=None):
+    return {
+        "form": AudioForm(),
+        "next": context["request"].build_absolute_uri(),
+    }
+
