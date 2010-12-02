@@ -31,7 +31,7 @@ class MediaAssociationBase(models.Model):
     object_pk = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey("content_type", "object_pk")
     
-    caption = models.TextField(blank=True)
+    caption = models.TextField()
     
     objects = MediaAssociationManager()
     
