@@ -4,10 +4,10 @@ from django.conf.urls.defaults import patterns, url
 urlpatterns = patterns("mimesis.views",
     
     # Images
-    url(r"^/image/add/", "add_image", name="add_image"),
-    url(r"^/image/add-for/(?P<app_label>[\w\-]+)/(?P<module_name>[\w\-]+)/(?P<obj_pk>\d+)/$",
+    url(r"^image/add/", "add_image", name="add_image"),
+    url(r"^image/add-for/(?P<app_label>[\w\-]+)/(?P<module_name>[\w\-]+)/(?P<obj_pk>\d+)/$",
         "add_image", name="add_image_for"),
-    url(r"^/image/(?P<pk>\d+)/associate/(?P<app_label>[\w\-]+)/(?P<module_name>[\w\-]+)/(?P<obj_pk>\d+)/$",
+    url(r"^image/(?P<pk>\d+)/associate/(?P<app_label>[\w\-]+)/(?P<module_name>[\w\-]+)/(?P<obj_pk>\d+)/$",
         "associate_image", name="associate_image"),
     
     # Audio
