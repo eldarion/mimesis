@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 from django.db.models import get_model
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
@@ -9,6 +10,16 @@ from django.contrib.auth.decorators import login_required
 from mimesis.forms import ImageForm, ImageAssociationForm
 from mimesis.forms import AudioForm, AudioAssociationForm
 from mimesis.models import Image, Audio, Video
+
+def image_add_url(obj=None):
+    kwargs = {}
+    if obj:
+        kwargs={
+            'app_label': obj._meta.app_label,
+            'module_name': obj._meta.module_name,
+            'pk': obj.pk
+        }
+    return reverse('add_image', kwargs=kwargs)
 
 
 @login_required

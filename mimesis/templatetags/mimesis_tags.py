@@ -1,9 +1,11 @@
 from django import template
-from django.contrib.contenttypes.models import ContentType
 from django.utils.encoding import smart_unicode
+
+from django.contrib.contenttypes.models import ContentType
 
 from mimesis.models import ImageAssociation, AudioAssociation, VideoAssociation
 from mimesis.forms import ImageForm, AudioForm
+from mimesis.views import image_add_url
 
 register = template.Library()
 
@@ -121,6 +123,7 @@ def get_video_list(parser, token):
 def image_form(context, obj=None):
     return {
         "form": ImageForm(),
+        "form_url": image_add_url(obj),
         "next": context["request"].build_absolute_uri(),
     }
 
