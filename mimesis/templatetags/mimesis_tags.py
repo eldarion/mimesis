@@ -9,7 +9,7 @@ register = template.Library()
 
 class BaseMediaNode(template.Node):
     """
-    Base helper class (abstract) for handling the get_media_for template tags.
+    Base helper class (abstract) for handling the get_media_list template tags.
     """
 
     @classmethod
@@ -102,15 +102,15 @@ class MediaListNode(BaseMediaNode):
 
 
 @register.tag
-def get_images_for(parser, token):
+def get_images_list(parser, token):
     return MediaListNode.handle_token(parser, token, ImageAssociation)
 
 
 @register.tag
-def get_audio_for(parser, token):
+def get_audio_list(parser, token):
     return MediaListNode.handle_token(parser, token, AudioAssociation)
 
 
 @register.tag
-def get_videos_for(parser, token):
+def get_videos_list(parser, token):
     return MediaListNode.handle_token(parser, token, VideoAssociation)
