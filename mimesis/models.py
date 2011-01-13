@@ -15,7 +15,7 @@ class MediaUpload(models.Model):
     
     title = models.CharField(max_length=150)
     description = models.TextField()
-    file = models.FileField(upload_to="mimesis")
+    media = models.FileField(upload_to="mimesis")
     creator = models.ForeignKey(User)
     created = models.DateTimeField(default=datetime.datetime.now)
     media_type = models.CharField(editable=False, max_length=100)
@@ -31,7 +31,7 @@ class MediaUpload(models.Model):
         return "%s/%s" % (self.media_type, self.media_subtype)
     
     def save(self, *args, **kwargs):
-        (mime_type, encoding) = mimetypes.guess_type(self.file.path)
+        (mime_type, encoding) = mimetypes.guess_type(self.media.path)
         try:
             mime = mime_type.split("/")
             self.media_type = mime[0]
