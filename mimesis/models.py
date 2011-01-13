@@ -1,4 +1,5 @@
 import datetime
+import mimetypes
 
 from django.db import models
 
@@ -10,70 +11,46 @@ from mimesis.managers import MediaAssociationManager
 from taggit.managers import TaggableManager
 
 
-class MediaBase(models.Model):
+class FileUpload(models.Model):
     
     title = models.CharField(max_length=150)
+    description = models.TextField()
+    file = models.FileField(upload_to="mimesis")
     creator = models.ForeignKey(User)
     created = models.DateTimeField(default=datetime.datetime.now)
+    type = models.CharField(editable=False, max_length=100)
+    subtype = models.CharField(editable=False, max_length=100)
     
     tags = TaggableManager()
     
-    class Meta:
-        abstract = True
-    
     def __unicode__(self):
         return self.title
+    
+    @property
+    def mime_type(self):
+        return "%s/%s" % (self.type, self.subtype)
+    
+    def save(self, *args, **kwargs):
+        (mime_type, encoding) = mimetypes.guess_type(self.upload.path)
+        try:
+            mime = mime_type.split("/")
+            self.type = mime[0]
+            self.subtype = mime[1]
+        except:
+            # Mime type unknown, use text/plain
+            self.type = "text"
+            self.sub_type = "plain"
+        super(UploadedFile, self).save()
 
 
-class MediaAssociationBase(models.Model):
+class FileAssociation(models.Model):
+    """
+    A generic association of a FileUpload object and any other Django model.
+    """
     
     content_type = models.ForeignKey(ContentType)
     object_pk = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey("content_type", "object_pk")
+    description = models.TextField()
     
-    caption = models.TextField()
-    
-    objects = MediaAssociationManager()
-    
-    class Meta:
-        abstract = True
-
-
-class Image(MediaBase):
-    
-    image = models.ImageField(upload_to="mimesis/image/")
-
-
-class ImageAssociation(MediaAssociationBase):
-    
-    image = models.ForeignKey(Image)
-    
-    def get_absolute_url(self):
-        return self.image.url
-
-
-class Audio(MediaBase):
-    
-    audio = models.FileField(upload_to="mimesis/audio/")
-
-
-class AudioAssociation(MediaAssociationBase):
-    
-    audio = models.ForeignKey(Audio)
-    
-    def get_absolute_url(self):
-        return self.audio.url
-
-
-class Video(MediaBase):
-    
-    video = models.URLField(blank=True)
-
-
-class VideoAssociation(MediaAssociationBase):
-    
-    video = models.ForeignKey(Video)
-    
-    def get_absolute_url(self):
-        return self.video
-
+    objects = FileAssociationManager()

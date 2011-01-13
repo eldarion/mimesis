@@ -1,10 +1,6 @@
 from django.contrib import admin
 
-from mimesis.models import Image, ImageAssociation
-from mimesis.models import Audio, AudioAssociation
+from mimesis.models import FileUpload, FileAssociation
 
-admin.site.register(Image)
-admin.site.register(ImageAssociation)
-
-admin.site.register(Audio)
-admin.site.register(AudioAssociation)
+admin.site.register(FileUpload)
+admin.site.register(FileAssociation)
