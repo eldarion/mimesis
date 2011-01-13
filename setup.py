@@ -15,8 +15,6 @@ setup(
     url = "http://github.com/eldarion/mimesis",
     packages = [
         "mimesis",
-        "mimesis.templatetags",
-        "mimesis.tests",
     ],
     classifiers = [
         "Development Status :: 3 - Alpha",
