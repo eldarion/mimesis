@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 
-from mimesis.managers import MediaAssociationManager
+from mimesis.managers import FileAssociationManager
 from taggit.managers import TaggableManager
 
 
