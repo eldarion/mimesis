@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from mimesis.models import FileUpload, FileAssociation
+from mimesis.models import MediaUpload, MediaAssociation
 
-admin.site.register(FileUpload)
-admin.site.register(FileAssociation)
+admin.site.register(MediaUpload)
+admin.site.register(MediaAssociation)

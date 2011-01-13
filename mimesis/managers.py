@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.utils.encoding import force_unicode
 
-class FileAssociationManager(models.Manager):
+class MediaAssociationManager(models.Manager):
     
     def for_model(self, model, content_type=None):
         """

@@ -7,19 +7,19 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 
-from mimesis.managers import FileAssociationManager
+from mimesis.managers import MediaAssociationManager
 from taggit.managers import TaggableManager
 
 
-class FileUpload(models.Model):
+class MediaUpload(models.Model):
     
     title = models.CharField(max_length=150)
     description = models.TextField()
     file = models.FileField(upload_to="mimesis")
     creator = models.ForeignKey(User)
     created = models.DateTimeField(default=datetime.datetime.now)
-    type = models.CharField(editable=False, max_length=100)
-    subtype = models.CharField(editable=False, max_length=100)
+    media_type = models.CharField(editable=False, max_length=100)
+    media_subtype = models.CharField(editable=False, max_length=100)
     
     tags = TaggableManager()
     
@@ -28,29 +28,31 @@ class FileUpload(models.Model):
     
     @property
     def mime_type(self):
-        return "%s/%s" % (self.type, self.subtype)
+        return "%s/%s" % (self.media_type, self.media_subtype)
     
     def save(self, *args, **kwargs):
-        (mime_type, encoding) = mimetypes.guess_type(self.upload.path)
+        (mime_type, encoding) = mimetypes.guess_type(self.file.path)
         try:
             mime = mime_type.split("/")
-            self.type = mime[0]
-            self.subtype = mime[1]
+            self.media_type = mime[0]
+            self.media_subtype = mime[1]
         except:
             # Mime type unknown, use text/plain
             self.type = "text"
             self.sub_type = "plain"
-        super(UploadedFile, self).save()
+        super(MediaUpload, self).save()
 
 
-class FileAssociation(models.Model):
+class MediaAssociation(models.Model):
     """
-    A generic association of a FileUpload object and any other Django model.
+    A generic association of a MediaUpload object and any other Django model.
     """
+    
+    media = models.ForeignKey(MediaUpload)
+    description = models.TextField()
     
     content_type = models.ForeignKey(ContentType)
     object_pk = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey("content_type", "object_pk")
-    description = models.TextField()
     
-    objects = FileAssociationManager()
+    objects = MediaAssociationManager()
