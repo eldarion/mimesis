@@ -1,6 +1,8 @@
 from django.db import models
-from django.contrib.contenttypes.models import ContentType
 from django.utils.encoding import force_unicode
+
+from django.contrib.contenttypes.models import ContentType
+
 
 class MediaAssociationManager(models.Manager):
     
