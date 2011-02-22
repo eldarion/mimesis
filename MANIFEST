@@ -5,3 +5,4 @@ setup.py
 mimesis/__init__.py
 mimesis/admin.py
 mimesis/models.py
+mimesis/managers.py
