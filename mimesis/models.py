@@ -13,8 +13,8 @@ from taggit.managers import TaggableManager
 
 class MediaUpload(models.Model):
     
-    title = models.CharField(max_length=150)
-    description = models.TextField()
+    title = models.CharField(max_length=150, blank=True)
+    description = models.TextField(blank=True)
     media = models.FileField(upload_to="mimesis")
     creator = models.ForeignKey(User)
     created = models.DateTimeField(default=datetime.datetime.now)
