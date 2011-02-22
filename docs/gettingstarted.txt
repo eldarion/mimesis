@@ -41,6 +41,7 @@ Add mimesis to your ``INSTALLED_APPS``:
     INSTALLED_APPS = [
         # ...
         "mimesis",
+        "taggit",
     ]
 
 Hook up mimesis to your URLconf:
