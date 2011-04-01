@@ -38,8 +38,8 @@ class MediaUpload(models.Model):
             self.media_subtype = mime[1]
         except:
             # Mime type unknown, use text/plain
-            self.type = "text"
-            self.sub_type = "plain"
+            self.media_type = "text"
+            self.media_subtype = "plain"
         super(MediaUpload, self).save()
 
 
