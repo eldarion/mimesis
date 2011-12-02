@@ -3,7 +3,7 @@
 mimesis documentation
 =====================
 
-mimesis is an extensible user profile app built by Eldarion.
+mimesis is a general media management app.
 
 .. toctree::
    :maxdepth: 3
